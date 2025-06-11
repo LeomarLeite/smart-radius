@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    /* Tema escuro tecnológico para a interface de border-radius */
+    body {
+      background: linear-gradient(135deg, #181f2a 0%, #232b3a 100%);
+      color: #e3e8ef;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+
+    .m,
+    #m1,
+    #m2,
+    aside.lr-smart-radius {
+      background: #232b3a;
+      border: 1.5px solid #2563eb;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #2563eb22, 0 1.5px 0 #0a192f;
+      color: #e3e8ef;
+      transition: border-radius 0.2s, box-shadow 0.2s;
+    }
+
+    h1,
+    h2 {
+      color: #60a5fa;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #2563eb33;
+    }
+
+    label,
+    select,
+    input,
+    span,
+    p {
+      color: #e3e8ef;
+    }
+
+    select,
+    input[type="number"],
+    input[type="range"] {
+      background: #181f2a;
+      border: 1.5px solid #2563eb;
+      color: #e3e8ef;
+      border-radius: 6px;
+      padding: 4px 8px;
+      margin: 2px 0;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    select:focus,
+    input[type="number"]:focus,
+    input[type="range"]:focus {
+      border-color: #60a5fa;
+    }
+
+    input[type="checkbox"] {
+      accent-color: #2563eb;
+    }
+
+    #dados-constantes>div {
+      background: #181f2a !important;
+      border: 1.5px solid #2563eb !important;
+      color: #e3e8ef !important;
+      box-shadow: 0 2px 16px #2563eb22, 0 1.5px 0 #0a192f;
+    }
+
+    #btn-copiar-constante {
+      background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      box-shadow: 0 2px 8px #2563eb33;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    #btn-copiar-constante:hover {
+      background: linear-gradient(90deg, #60a5fa 60%, #2563eb 100%);
+      box-shadow: 0 4px 16px #2563eb55;
+    }
+
+    .cornerCheck,
+    #allCorners {
+      accent-color: #60a5fa;
+    }
+
+    pre,
+    code,
+    .monospace {
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+      color: #a5b4fc;
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar {
+      height: 8px;
+      background: #232b3a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2563eb88;
+      border-radius: 8px;
+    }
+
+    body {
+      background-color: #181f2a;
+    }
+
+    .m {
+      margin: 20px;
+      /* transition: border-radius 0.2s; */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    #m1 {
+      height: 300px;
+      width: 300px;
+      background-color: #181f2a;
+      border: 1px solid #60a5fa;
+      padding: 20px;
+    }
+
+    #m2 {
+      height: 50px;
+      width: 300px;
+      background-color: #181f2a;
+      border: 1px solid #60a5fa;
+      padding: 20px;
+    }
+  </style>
+  <script>
+    function aplicarRadiusProporcional(selector, percent, base, modo, useNativePercent) {
+      let radiusList = [];
+      document.querySelectorAll(selector).forEach(function (el) {
+        const w = el.offsetWidth;
+        const h = el.offsetHeight;
+        let px = 0;
+        if (useNativePercent) {
+          // DEBUG: Entrou no modo porcentagem nativa
+          console.log('[DEBUG] Modo porcentagem nativa', {
+            percent,
+            corners: {
+              tl: document.getElementById('corner-tl').checked,
+              tr: document.getElementById('corner-tr').checked,
+              br: document.getElementById('corner-br').checked,
+              bl: document.getElementById('corner-bl').checked
+            }
+          });
+          // Aplica valor percentual apenas nos cantos marcados
+          const tl = document.getElementById('corner-tl').checked ? percent + '%' : '0';
+          const tr = document.getElementById('corner-tr').checked ? percent + '%' : '0';
+          const br = document.getElementById('corner-br').checked ? percent + '%' : '0';
+          const bl = document.getElementById('corner-bl').checked ? percent + '%' : '0';
+          el.style.borderTopLeftRadius = tl;
+          el.style.borderTopRightRadius = tr;
+          el.style.borderBottomRightRadius = br;
+          el.style.borderBottomLeftRadius = bl;
+          console.log('[DEBUG] Elemento', el, 'Radius aplicado:', {tl, tr, br, bl});
+          radiusList.push(percent); // só para manter o array
+          return;
+        }
+        // DEBUG: Entrou no modo proporcional em px
+        console.log('[DEBUG] Modo proporcional px', {
+          base,
+          modo,
+          w,
+          h,
+          percent,
+          pxCalculado: px
+        });
+        // Corrige para os novos valores de base
+        if (base === 'base-maior') px = Math.max(w, h) * (percent / 100);
+        else if (base === 'base-menor') px = Math.min(w, h) * (percent / 100);
+        else if (base === 'quarto' || base === 'media') px = ((w + h) / 4) * (percent / 100);
+        applyBorderRadiusCorners(el, px + 'px');
+        console.log('[DEBUG] Elemento', el, 'Radius px aplicado:', px);
+        radiusList.push(px);
+      });
+      let applyRadius = radiusList;
+      if (!useNativePercent) {
+        console.log('[DEBUG] Modo de aplicação', modo, 'Lista de radius:', applyRadius);
+        if (modo === 'maior' || modo === 'all-max') {
+          const maxR = Math.max(...radiusList);
+          applyRadius = radiusList.map(() => maxR);
+        } else if (modo === 'menor' || modo === 'all-min') {
+          const minR = Math.min(...radiusList);
+          applyRadius = radiusList.map(() => minR);
+        }
+        let idx = 0;
+        document.querySelectorAll(selector).forEach(function (el) {
+          applyBorderRadiusCorners(el, applyRadius[idx] + 'px');
+          console.log('[DEBUG] Elemento', el, 'Radius final aplicado:', applyRadius[idx]);
+          idx++;
+        });
+      }
+    }
+    function applyBorderRadiusCorners(el, value) {
+      const tl = document.getElementById('corner-tl').checked ? value : '0';
+      const tr = document.getElementById('corner-tr').checked ? value : '0';
+      const br = document.getElementById('corner-br').checked ? value : '0';
+      const bl = document.getElementById('corner-bl').checked ? value : '0';
+      el.style.borderTopLeftRadius = tl;
+      el.style.borderTopRightRadius = tr;
+      el.style.borderBottomRightRadius = br;
+      el.style.borderBottomLeftRadius = bl;
+    }
+    function aplicarRadiusPx(selector, px) {
+      document.querySelectorAll(selector).forEach(function (el) {
+        el.style.borderRadius = px + "px";
+      });
+    }
+    function removerRadius(selector) {
+      document.querySelectorAll(selector).forEach(function (el) {
+        el.style.borderRadius = "0px";
+        el.style.borderTopLeftRadius = "0px";
+        el.style.borderTopRightRadius = "0px";
+        el.style.borderBottomRightRadius = "0px";
+        el.style.borderBottomLeftRadius = "0px";
+      });
+    }
+    function atualizarRadiusSlider(percent) {
+      document.getElementById('radiusValue').textContent = percent + '%';
+      atualizarRadiusUI();
+    }
+    function getCurrentRadiusConfig() {
+      return {
+        arredondado: document.getElementById('roundedCheck').checked, // agora booleano
+        tipo: document.getElementById('tipoSelect').value,
+        modo: document.getElementById('radiusMode') ? document.getElementById('radiusMode').value : 'proprio',
+        base: document.getElementById('baseSelect').value,
+        percent: parseInt(document.getElementById('radiusRange').value, 10),
+        px: parseInt(document.getElementById('radiusPx').value, 10),
+        useNativePercent: document.getElementById('nativePercent') && document.getElementById('nativePercent').checked,
+        corners: {
+          tl: document.getElementById('corner-tl').checked,
+          tr: document.getElementById('corner-tr').checked,
+          br: document.getElementById('corner-br').checked,
+          bl: document.getElementById('corner-bl').checked
+        }
+      };
+    }
+
+    function exibirConstanteConfig() {
+      const config = getCurrentRadiusConfig();
+      const code = '```js\nconst lrAutoRadiusConfig = ' + JSON.stringify(config, null, 2) + ';\n```';
+      const html = `
+        <div style="background:#f8f8f8;border:1px solid #ccc;padding:10px;position:relative;border-radius:8px;box-shadow:0 2px 8px #0001;max-width:700px;">
+          <button id="btn-copiar-constante" style="position:absolute;top:10px;right:10px;padding:4px 12px;border-radius:5px;border:none;background:#0078d4;color:#fff;cursor:pointer;font-size:14px;transition:background 0.2s;">Copiar</button>
+          <div style="font-family:monospace;font-size:15px;white-space:pre;overflow-x:auto;">${code}</div>
+        </div>
+      `;
+      document.getElementById('dados-constantes').innerHTML = html;
+      // Copiar ao clicar
+      setTimeout(() => {
+        const btn = document.getElementById('btn-copiar-constante');
+        if (btn) {
+          btn.onclick = function() {
+            navigator.clipboard.writeText(
+              'const lrAutoRadiusConfig = ' + JSON.stringify(config, null, 2) + ';'
+            );
+            btn.textContent = 'Copiado!';
+            setTimeout(() => btn.textContent = 'Copiar', 1200);
+          };
+        }
+      }, 100);
+    }
+
+    // Chame exibirConstanteConfig sempre que atualizar
+    function atualizarRadiusUI() {
+      const arredondado = document.getElementById('roundedCheck').checked;
+      const tipo = document.getElementById('tipoSelect').value;
+      const base = document.getElementById('baseSelect').value;
+      const modo = document.getElementById('radiusMode') ? document.getElementById('radiusMode').value : 'proprio';
+      const percent = parseInt(document.getElementById('radiusRange').value, 10);
+      const px = parseInt(document.getElementById('radiusPx').value, 10);
+      const useNativePercent = document.getElementById('nativePercent') && document.getElementById('nativePercent').checked;
+      document.getElementById('opcaoProporcional').style.display = (tipo === '%') ? 'inline' : 'none';
+      document.getElementById('opcaoPx').style.display = (tipo === 'px') ? 'inline' : 'none';
+      if (!arredondado) {
+        removerRadius('.m');
+      } else if (tipo === '%') {
+        aplicarRadiusProporcional('.m', percent, base, modo, useNativePercent);
+      } else {
+        aplicarRadiusPx('.m', px);
+      }
+      exibirConstanteConfig();
+    }
+    function toggleAllCorners() {
+      const all = document.getElementById('allCorners').checked;
+      document.querySelectorAll('.cornerCheck').forEach(cb => cb.checked = all);
+      atualizarRadiusUI();
+    }
+    function updateCornerChecks() {
+      const checks = Array.from(document.querySelectorAll('.cornerCheck'));
+      const allChecked = checks.every(cb => cb.checked);
+      document.getElementById('allCorners').checked = allChecked;
+      atualizarRadiusUI();
+    }
+    window.addEventListener('DOMContentLoaded', function () {
+      atualizarRadiusUI();
+    });
+    window.addEventListener('resize', function () {
+      const arredondado = document.getElementById('roundedSelect').value;
+      const tipo = document.getElementById('tipoSelect').value;
+      if (arredondado === 'sim' && tipo === '%') atualizarRadiusUI();
+    });
+    // Atualiza os selects para refletir os novos valores e textos
+    document.getElementById('radiusMode').innerHTML = `
+      <option value="proprio">Radius do próprio elemento</option>
+      <option value="all-max">Maior radius de todos elementos</option>
+      <option value="all-min">Menor radius de todos elementos</option>
+    `;
+    document.getElementById('baseSelect').innerHTML = `
+      <option value="base-maior">Maior base</option>
+      <option value="base-menor" selected>Menor base</option>
+      <option value="media">Média</option>
+    `;
+  </script>
+</head>
+
+<body>
+  <h1>Border-radius proporcional</h1>
+
+
+  <header class="" style="margin: 20px; padding: 10px;">
+    <h2>Explicação</h2>
+    <p>Este exemplo demonstra como aplicar um border-radius proporcional a elementos HTML, baseado em suas dimensões. O
+      valor do border-radius é calculado como uma porcentagem da média das larguras e alturas dos elementos.</p>
+    <p>O script ajusta o border-radius automaticamente ao carregar a página e ao redimensionar a janela. Você também
+      pode ajustar o valor do border-radius usando o controle deslizante.</p>
+  </header>
+
+  <div  style="margin: 20px; padding: 10px;">
+    <label><input type="checkbox" id="roundedCheck" checked onchange="atualizarRadiusUI()"> Cantos arredondados</label>
+  <br>
+  <label for="tipoSelect">Tipo de arredondamento:</label>
+  <select id="tipoSelect" onchange="atualizarRadiusUI()">
+    <option value="%">Proporcional (%)</option>
+    <option value="px">Fixo (px)</option>
+  </select>
+  <span id="opcaoProporcional" style="display:inline;">
+    <label for="radiusMode">Modo de aplicação:</label>
+    <select id="radiusMode" onchange="atualizarRadiusUI()">
+      <option value="proprio">Radius do próprio elemento</option>
+      <option value="all-max">Maior radius de todos elementos</option>
+      <option value="all-min">Menor radius de todos elementos</option>
+    </select>
+    <label for="baseSelect">Base:</label>
+    <select id="baseSelect" onchange="atualizarRadiusUI()">
+      <option value="base-maior">Maior base</option>
+      <option value="base-menor" selected>Menor base</option>
+      <option value="media">Média</option>
+    </select>
+    <label for="radiusRange">Valor:</label>
+    <input type="range" id="radiusRange" min="0" max="100" value="50" oninput="atualizarRadiusSlider(this.value)">
+    <span id="radiusValue">50%</span>
+  </span>
+  <span id="opcaoPx" style="display:none;">
+    <label for="radiusPx">Valor (px):</label>
+    <input type="number" id="radiusPx" min="0" max="300" value="20" oninput="atualizarRadiusUI()"> px
+  </span>
+  <label><input type="checkbox" id="nativePercent" onchange="atualizarRadiusUI()"> Usar porcentagem nativa do CSS (%)</label>
+
+  <div style="margin-bottom:10px;">
+    <label><input type="checkbox" id="allCorners" checked onchange="toggleAllCorners()"> Todos os cantos</label>
+    <label><input type="checkbox" class="cornerCheck" id="corner-tl" checked onchange="updateCornerChecks()"> Superior esquerdo</label>
+    <label><input type="checkbox" class="cornerCheck" id="corner-tr" checked onchange="updateCornerChecks()"> Superior direito</label>
+    <label><input type="checkbox" class="cornerCheck" id="corner-br" checked onchange="updateCornerChecks()"> Inferior direito</label>
+    <label><input type="checkbox" class="cornerCheck" id="corner-bl" checked onchange="updateCornerChecks()"> Inferior esquerdo</label>
+  </div>
+  </div>
+
+  <!-- Corpo da Página Afetada -->
+
+  <div style="display: flex; flex-wrap: wrap; gap: 32px; margin: 20px; padding: 10px; align-items: flex-start; justify-content: center;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div id="m1" class="lr-smart-radius m">
+        <p>Arredondamento proporcional</p>
+      </div>
+      <div id="m2" class="lr-smart-radius m">
+        <p>Arredondamento proporcional</p>
+      </div>
+    </div>
+    <div id="dados-constantes" style="min-width:340px;max-width:700px;flex:1 1 340px;"></div>
+  </div>
+</body>
+
+</html>
