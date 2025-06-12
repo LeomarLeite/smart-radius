@@ -4,8 +4,8 @@
 const lrAutoRadiusConfig = {
   "arredondado": true,
   "tipo": "%",
-  "modo": "proprio",
-  "base": "base-maior",
+  "modo": "all-max",
+  "base": "medium-base",
   "percent": 6,
   "px": 20,
   "useNativePercent": false,
@@ -47,9 +47,9 @@ function applyLrAutoRadius(config) {
           return;
         }
         // Novos valores de base
-        if (config.base === 'base-maior') px = Math.max(w, h) * (config.percent / 100);
-        else if (config.base === 'base-menor') px = Math.min(w, h) * (config.percent / 100);
-        else if (config.base === 'media' || config.base === 'quarto') px = ((w + h) / 4) * (config.percent / 100);
+        if (config.base === 'larger-base') px = Math.max(w, h) * (config.percent / 100);
+        else if (config.base === 'smaller-base') px = Math.min(w, h) * (config.percent / 100);
+        else if (config.base === 'medium-base' || config.base === 'quarto') px = ((w + h) / 4) * (config.percent / 100);
         radiusList.push(px);
       });
       if (radiusList.length === 0) continue;

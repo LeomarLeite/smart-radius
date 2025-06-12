@@ -1,0 +1,131 @@
+    /* Tema escuro tecnológico para a interface de border-radius */
+    body {
+        background: linear-gradient(135deg, #181f2a 0%, #232b3a 100%);
+        color: #e3e8ef;
+        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+
+    .m,
+    #m1,
+    #m2,
+    aside.lr-smart-radius {
+        background: #232b3a;
+        border: 1.5px solid #2563eb;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px #2563eb22, 0 1.5px 0 #0a192f;
+        color: #e3e8ef;
+        transition: border-radius 0.2s, box-shadow 0.2s;
+    }
+
+    h1,
+    h2 {
+        color: #60a5fa;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 8px #2563eb33;
+    }
+
+    label,
+    select,
+    input,
+    span,
+    p {
+        color: #e3e8ef;
+    }
+
+    select,
+    input[type="number"],
+    input[type="range"] {
+        background: #181f2a;
+        border: 1.5px solid #2563eb;
+        color: #e3e8ef;
+        border-radius: 6px;
+        padding: 4px 8px;
+        margin: 2px 0;
+        outline: none;
+        transition: border 0.2s;
+    }
+
+    select:focus,
+    input[type="number"]:focus,
+    input[type="range"]:focus {
+        border-color: #60a5fa;
+    }
+
+    input[type="checkbox"] {
+        accent-color: #2563eb;
+    }
+
+    #dados-constantes>div {
+        background: #181f2a !important;
+        border: 1.5px solid #2563eb !important;
+        color: #e3e8ef !important;
+        box-shadow: 0 2px 16px #2563eb22, 0 1.5px 0 #0a192f;
+    }
+
+    #btn-copiar-constante {
+        background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        box-shadow: 0 2px 8px #2563eb33;
+        transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    #btn-copiar-constante:hover {
+        background: linear-gradient(90deg, #60a5fa 60%, #2563eb 100%);
+        box-shadow: 0 4px 16px #2563eb55;
+    }
+
+    .cornerCheck,
+    #allCorners {
+        accent-color: #60a5fa;
+    }
+
+    pre,
+    code,
+    .monospace {
+        font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+        color: #a5b4fc;
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar {
+        height: 8px;
+        background: #232b3a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #2563eb88;
+        border-radius: 8px;
+    }
+
+    body {
+        background-color: #181f2a;
+    }
+
+    .m {
+        margin: 20px;
+        /* transition: border-radius 0.2s; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    #m1 {
+        height: 300px;
+        width: 300px;
+        background-color: #181f2a;
+        border: 1px solid #60a5fa;
+        padding: 20px;
+    }
+
+    #m2 {
+        height: 50px;
+        width: 300px;
+        background-color: #181f2a;
+        border: 1px solid #60a5fa;
+        padding: 20px;
+    }
